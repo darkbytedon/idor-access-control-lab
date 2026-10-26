@@ -1,10 +1,16 @@
 
+import os
 from flask import Flask, session, redirect, url_for
 
 app = Flask(__name__)
-app.secret_key = "local-practice-key-only"
 
-# Fictional accounts for local security testing
+# Load the secret key from an environment variable.
+app.secret_key = os.environ.get("FLASK_SECRET_KEY")
+
+if not app.secret_key:
+    raise RuntimeError("Set the FLASK_SECRET_KEY environment variable.")
+
+# Fictional accounts for local security testing.
 users = {
     1: {"name": "Alice", "email": "alice@example.test"},
     2: {"name": "Bob", "email": "bob@example.test"},
@@ -33,11 +39,11 @@ def login(user_id):
 def profile(user_id):
     logged_in_user_id = session.get("user_id")
 
-    # Require a logged-in user.
+    # Require an authenticated session.
     if logged_in_user_id is None:
         return "Please log in first.", 401
 
-    # Allow users to view only their own profile.
+    # Enforce profile ownership on the server.
     if logged_in_user_id != user_id:
         return "Forbidden: you cannot access this profile.", 403
 
