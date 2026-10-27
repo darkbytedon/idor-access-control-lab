@@ -1,5 +1,25 @@
 ![IDOR Security Tests](https://github.com/darkbytedon/idor-access-control-lab/actions/workflows/tests.yml/badge.svg)
 
+# IDOR Access Control Security Lab
+
+A hands-on cybersecurity project demonstrating **Insecure Direct Object Reference (IDOR)** vulnerabilities and automated access-control security testing using Python and Flask.
+
+## Project Highlights
+
+- Identified and fixed an IDOR vulnerability.
+- Implemented server-side authorization checks.
+- Tested unauthorized and cross-user profile access.
+- Automated six access-control test cases.
+- Integrated GitHub Actions for continuous testing.
+
+## Technologies
+
+- Python
+- Flask
+- Pytest / automated tests
+- GitHub Actions
+- Git and GitHub![IDOR Security Tests](https://github.com/darkbytedon/idor-access-control-lab/actions/workflows/tests.yml/badge.svg)
+
 #IDOR Access control security lab
 
 A hands-on cybersecurity project demonstrating Insecure Direct Object Reference (IDOR), server-side access control, and automated security testing using Python and Flask.
