@@ -1,4 +1,6 @@
-# IDOR Access Control Lab
+![IDOR Security Tests](https://github.com/darkbytedon/idor-access-control-lab/actions/workflows/tests.yml/badge.svg)
+
+#IDOR Access control security lab
 
 A hands-on cybersecurity project demonstrating Insecure Direct Object Reference (IDOR), server-side access control, and automated security testing using Python and Flask.
 
@@ -17,25 +19,32 @@ The project implements server-side authorization checks and automated tests to v
 - Automated security testing
 - HTTP status code analysis
 - Security documentation and remediation
-- GitHub portfolio management
+- GitHub Actions and continuous integration
 
 ## Technologies
 
 - Python
 - Flask
-- HTML
+- Requests
 - Git and GitHub
+- GitHub Actions
 
 ## Project Structure
 
 ```text
 idor-access-control-lab/
+├── .github/
+│   └── workflows/
+│       └── tests.yml
+├── evidence/
+│   ├── ownership_check.png
+│   └── test_access.png
 ├── app.py
 ├── test_access.py
+├── requirements.txt
 ├── SECURITY_REPORT.md
-└── evidence/
-    ├── ownership_check.png
-    └── test_access.png
+├── README.md
+└── .gitignore
 ```
 
 ## Installation and Setup
@@ -49,15 +58,17 @@ cd idor-access-control-lab
 
 ### 2. Create a virtual environment
 
+On Windows Command Prompt:
+
 ```bat
 python -m venv .venv
 .venv\Scripts\activate
 ```
 
-### 3. Install Flask
+### 3. Install dependencies
 
 ```bash
-python -m pip install Flask
+python -m pip install -r requirements.txt
 ```
 
 ### 4. Set the local secret key
@@ -68,7 +79,7 @@ For Windows Command Prompt:
 set FLASK_SECRET_KEY=local-lab-key-change-me
 ```
 
-This example key is for local practice only. Never use it as a production secret.
+This key is for local practice only. Use a securely generated secret for any real deployment.
 
 ### 5. Start the application
 
@@ -80,9 +91,9 @@ Visit http://127.0.0.1:5000 in your browser.
 
 ## Running the Security Tests
 
-Open a second terminal in the project folder, activate the virtual environment, and run:
+Keep the Flask application running. Open a second terminal in the project folder, activate the virtual environment, and run:
 
-```bash
+```bat
 python test_access.py
 ```
 
@@ -95,15 +106,25 @@ The automated test suite checks:
 5. Bob cannot access Alice's profile.
 6. An invalid profile ID is rejected.
 
-**Latest local result: 6/6 tests passed.**
+**Latest verified local result: 6/6 tests passed.**
 
 ## Security Remediation
 
 The application checks the authenticated user's ID against the requested profile owner's ID on the server.
 
-If the IDs do not match, access is denied with HTTP `403 Forbidden`. This prevents a user from accessing another user's profile simply by changing the ID in the URL.
+- Unauthenticated requests receive HTTP `401 Unauthorized`.
+- Requests to another user's profile receive HTTP `403 Forbidden`.
+- Authorized users can access their own profiles.
 
 Authorization must be enforced server-side for every protected resource.
+
+## Continuous Integration
+
+GitHub Actions runs the security tests automatically when changes are pushed or a pull request is opened.
+
+The workflow installs dependencies, starts the Flask application, and runs the automated test suite.
+
+The workflow badge at the top of this README displays the current CI status.
 
 ## Evidence and Security Report
 
@@ -114,6 +135,8 @@ See [SECURITY_REPORT.md](SECURITY_REPORT.md) for the vulnerability description, 
 ## Scope and Disclaimer
 
 This is an educational project using fictional accounts and local test data. Test only systems you own or have explicit permission to assess.
+
+Passing these tests does not prove that every possible security vulnerability has been eliminated.
 
 ## Author
 
