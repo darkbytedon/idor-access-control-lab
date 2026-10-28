@@ -11,10 +11,10 @@ if not app.secret_key:
 
 # Fictional accounts for local security testing
 users = {
-    1: {"name": "Alice", "email": "alice@example.test"},
-    2: {"name": "Bob", "email": "bob@example.test"},
+    1: {"name": "Alice", "email": "alice@example.test", "role": "user"},
+    2: {"name": "Bob", "email": "bob@example.test", "role": "user"},
+    3: {"name": "Admin", "email": "admin@example.test", "role": "admin"},
 }
-
 
 @app.route("/")
 def home():
@@ -22,8 +22,8 @@ def home():
     <h1>Local IDOR Training Lab</h1>
     <p><a href="/login/1">Log in as Alice</a></p>
     <p><a href="/login/2">Log in as Bob</a></p>
+    <p><a href="/login/3">Log in as Admin (training only)</a></p>
     """
-
 
 @app.route("/login/<int:user_id>")
 def login(user_id):
@@ -58,7 +58,19 @@ def profile(user_id):
     <p>Email: {user["email"]}</p>
     <p><a href="/">Home</a></p>
     """
+@app.route("/admin")
+def admin():
+    logged_in_user_id = session.get("user_id")
 
+    if logged_in_user_id is None:
+        return "Please log in first.", 401
+
+    user = users.get(logged_in_user_id)
+
+    if user is None or user.get("role") != "admin":
+        return "Forbidden: admin access required.", 403
+
+    return "<h1>Admin Dashboard</h1><p>Authorized admin access.</p>"
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5000, debug=False)

@@ -23,28 +23,18 @@ The application performs authentication and profile-ownership checks on the serv
 - Unauthenticated requests receive **HTTP 401 Unauthorized**.
 - Requests to access another user's profile receive **HTTP 403 Forbidden**.
 - Authorized users can access their own profiles.
-
 ## Automated Security Tests
 
-The `test_access.py` script tests six scenarios:
+The `test_access.py` script covers 12 main scenarios involving authentication, profile ownership, role-based access control, and URL parameter manipulation.
 
-1. Unauthenticated access is denied.
-2. Alice can access her own profile.
-3. Alice cannot access Bob's profile.
-4. Bob can access his own profile.
-5. Bob cannot access Alice's profile.
-6. Alice cannot access an invalid profile ID.
+The tests verify that:
+- Unauthenticated requests are denied.
+- Users can access their own profiles but cannot access other users' profiles.
+- Invalid profile access is denied.
+- Ordinary users cannot access the admin dashboard.
+- The admin account can access the admin dashboard.
+- Adding `?role=admin` to a request does not grant admin privileges.
 
-**Recorded test result:** Six out of six tests passed.
+**Recorded test result:** 12 out of 12 main tests passed.
 
-## Limitations
-
-This is a small local training lab using fictional accounts. Passing these six tests does not prove that a real application is secure or that every possible access-control vulnerability has been identified.
-
-## Future Improvements
-
-- Test unauthorized editing and deletion.
-- Add more user roles and protected resources.
-- Expand automated security test coverage.
-- Run tests automatically through a continuous integration workflow.
-- Document additional test cases and remediation evidence.
+An additional invalid-session-cookie check returned HTTP 401, indicating that the request was treated as unauthenticated. This additional check runs separately from the 12-test main suite.
