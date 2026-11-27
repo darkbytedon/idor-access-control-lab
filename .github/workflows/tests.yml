@@ -1,9 +1,12 @@
-name: IDOR Security Tests
+name: IDOR Security Assessment Tests
 
 on:
   push:
   pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   security-tests:
@@ -11,10 +14,10 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
@@ -23,23 +26,36 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
-      - name: Start Flask application
+      - name: Start original Flask application
         env:
           FLASK_SECRET_KEY: ci-test-secret-key
         run: |
           python app.py > app.log 2>&1 &
-          for i in {1..15}; do
-            if curl -fsS http://127.0.0.1:5000/ > /dev/null; then
+          echo $! > app.pid
+
+          for attempt in {1..15}; do
+            if curl --fail --silent http://127.0.0.1:5000/ > /dev/null; then
               echo "Flask application is ready."
               exit 0
             fi
             sleep 1
           done
+
           cat app.log
           echo "Flask application failed to start."
           exit 1
 
-      - name: Run IDOR security tests
+      - name: Run original integration tests
+        run: python test_access.py
+
+      - name: Run vulnerable and remediated assessment tests
         env:
           FLASK_SECRET_KEY: ci-test-secret-key
-        run: python test_access.py
+        run: python -m unittest -v test_assessment.py
+
+      - name: Stop Flask application
+        if: always()
+        run: |
+          if [ -f app.pid ]; then
+            kill "$(cat app.pid)" || true
+          fi

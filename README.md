@@ -1,165 +1,105 @@
-![IDOR Security Tests](https://github.com/darkbytedon/idor-access-control-lab/actions/workflows/tests.yml/badge.svg)
-
 # IDOR Access Control Security Lab
 
-A hands-on cybersecurity project demonstrating **Insecure Direct Object Reference (IDOR)** vulnerabilities and automated access-control security testing using Python and Flask.
+![IDOR Security Tests](https://github.com/darkbytedon/idor-access-control-lab/actions/workflows/tests.yml/badge.svg)
 
-## Project Highlights
-
-- Identified and fixed an IDOR vulnerability.
-- Implemented server-side authorization checks.
-- Tested unauthorized and cross-user profile access.
-- Automated six access-control test cases.
-- Integrated GitHub Actions for continuous testing.
-
-## Technologies
-
-- Python
-- Flask
-- Pytest / automated tests
-- GitHub Actions
-- Git and GitHub![IDOR Security Tests](https://github.com/darkbytedon/idor-access-control-lab/actions/workflows/tests.yml/badge.svg)
-
-#IDOR Access control security lab
-
-A hands-on cybersecurity project demonstrating Insecure Direct Object Reference (IDOR), server-side access control, and automated security testing using Python and Flask.
+A practical application-security portfolio project demonstrating Insecure Direct Object Reference (IDOR), Broken Object Level Authorization (BOLA), server-side authorization and automated security testing using Python and Flask.
 
 ## Project Overview
 
-This project simulates a web application with two fictional users, Alice and Bob. It demonstrates how weak authorization controls can allow one user to access another user's private profile.
+This repository contains an original Flask access-control lab and a separate controlled before-and-after IDOR demonstration.
 
-The project implements server-side authorization checks and automated tests to verify that users can access only their own profiles.
+The project demonstrates how missing object-level authorization can allow one authenticated user to access another user's private information, and how server-side ownership checks prevent unauthorized access.
 
-## Skills Demonstrated
+## Project Highlights
 
-- Web application security
-- IDOR vulnerability analysis
-- Authentication and authorization
-- Python and Flask
-- Automated security testing
-- HTTP status code analysis
-- Security documentation and remediation
-- GitHub Actions and continuous integration
+- Investigated object-level authorization.
+- Created a controlled IDOR vulnerability demonstration.
+- Reproduced unauthorized cross-user profile access.
+- Implemented server-side ownership validation.
+- Performed manual and automated retesting.
+- Integrated GitHub Actions for continuous testing.
+- Documented the assessment in a professional security report.
+
+## Project Structure
+
+- `app.py` — Original Flask training application.
+- `test_access.py` — Original integration security tests.
+- `vulnerable-demo/` — Intentionally vulnerable local demonstration.
+- `remediated-demo/` — Corrected implementation.
+- `test_assessment.py` — Automated before-and-after tests.
+- `SECURITY_REPORT.md` — Professional IDOR security assessment.
+- `evidence/` — Test output and supporting screenshots.
+- `.github/workflows/tests.yml` — GitHub Actions workflow.
 
 ## Technologies
 
 - Python
 - Flask
 - Requests
+- Python unittest
 - Git and GitHub
 - GitHub Actions
+- Linux / Ubuntu
 
-## Project Structure
+## Automated Testing
 
-```text
-idor-access-control-lab/
-├── .github/
-│   └── workflows/
-│       └── tests.yml
-├── evidence/
-│   ├── ownership_check.png
-│   └── test_access.png
-├── app.py
-├── test_access.py
-├── requirements.txt
-├── SECURITY_REPORT.md
-├── README.md
-└── .gitignore
-```
+The project contains two separate test suites.
 
-## Installation and Setup
+### Original integration tests
 
-### 1. Clone the repository
+Run the original Flask application with a local secret key, then execute `python test_access.py`.
 
-```bash
-git clone https://github.com/darkbytedon/idor-access-control-lab.git
-cd idor-access-control-lab
-```
+The 13 checks cover authentication, profile ownership, administrative access, URL parameter manipulation and invalid session cookies.
 
-### 2. Create a virtual environment
+### Before-and-after IDOR assessment
 
-On Windows Command Prompt:
+Run:
 
-```bat
-python -m venv .venv
-.venv\Scripts\activate
-```
+`python -m unittest -v test_assessment.py`
 
-### 3. Install dependencies
+This suite contains:
 
-```bash
-python -m pip install -r requirements.txt
-```
+- 4 tests confirming the expected behaviour of the intentionally vulnerable application.
+- 6 tests verifying the corrected application's authorization controls.
 
-### 4. Set the local secret key
+Recorded local result: 10 out of 10 tests passed.
 
-For Windows Command Prompt:
+The vulnerable tests passing means the deliberately insecure behaviour was reproduced successfully. It does not mean the vulnerable application is secure.
 
-```bat
-set FLASK_SECRET_KEY=local-lab-key-change-me
-```
+### Combined testing
 
-This key is for local practice only. Use a securely generated secret for any real deployment.
+GitHub Actions is configured to run both suites on pushes, pull requests and manual workflow dispatches.
 
-### 5. Start the application
+## Security Assessment
 
-```bash
-python app.py
-```
+See [SECURITY_REPORT.md](SECURITY_REPORT.md) for the complete assessment, including:
 
-Visit http://127.0.0.1:5000 in your browser.
+- Executive summary and scope.
+- Vulnerability reproduction.
+- Root cause analysis.
+- Demonstrated and potential security impact.
+- Server-side remediation.
+- Manual and automated retesting.
+- Assessment limitations and evidence integrity.
 
-## Running the Security Tests
+## Important Security Notice
 
-Keep the Flask application running. Open a second terminal in the project folder, activate the virtual environment, and run:
+The applications use fictional accounts and local training data.
 
-```bat
-python test_access.py
-```
+The intentionally vulnerable demonstration must remain restricted to `127.0.0.1` and must never be deployed publicly.
 
-The automated test suite checks:
+The training login mechanism is simplified and is not suitable for production authentication.
 
-1. Unauthenticated access is denied.
-2. Alice can access her own profile.
-3. Alice cannot access Bob's profile.
-4. Bob can access his own profile.
-5. Bob cannot access Alice's profile.
-6. An invalid profile ID is rejected.
+The original published application history already contained an ownership check. The vulnerable demonstration was created separately for controlled educational testing.
 
-**Latest verified local result: 6/6 tests passed.**
+## Disclaimer
 
-## Security Remediation
+This is an educational cybersecurity portfolio project, not a report of a real client engagement or production penetration test.
 
-The application checks the authenticated user's ID against the requested profile owner's ID on the server.
-
-- Unauthenticated requests receive HTTP `401 Unauthorized`.
-- Requests to another user's profile receive HTTP `403 Forbidden`.
-- Authorized users can access their own profiles.
-
-Authorization must be enforced server-side for every protected resource.
-
-## Continuous Integration
-
-GitHub Actions runs the security tests automatically when changes are pushed or a pull request is opened.
-
-The workflow installs dependencies, starts the Flask application, and runs the automated test suite.
-
-The workflow badge at the top of this README displays the current CI status.
-
-## Evidence and Security Report
-
-The `evidence/` directory contains screenshots of the authorization check and automated test results.
-
-See [SECURITY_REPORT.md](SECURITY_REPORT.md) for the vulnerability description, remediation, test results, and project limitations.
-
-## Scope and Disclaimer
-
-This is an educational project using fictional accounts and local test data. Test only systems you own or have explicit permission to assess.
-
-Passing these tests does not prove that every possible security vulnerability has been eliminated.
+Test only systems you own or have explicit permission to assess.
 
 ## Author
 
 **DarkByteDon**
 
-Cybersecurity learning portfolio — application security, Python, and secure web development.
+Cybersecurity learning portfolio — application security, Python and secure web development.
